@@ -18,7 +18,7 @@ dependencies {
 
 jar {
     archiveBaseName = 'jmbe'
-    archiveClassifier = 'GTR8000-legacy-tones-test'
+    archiveClassifier = 'GTR8000-selectable-tone-levels-test'
     manifest {
         attributes('Implementation-Title': rootProject.name,
                 'Version': project.version,
@@ -36,4 +36,8 @@ jar {
             println("Failed to create the JMBE library.")
         }
     }
+}
+
+test {
+    useJUnit()
 }

@@ -91,6 +91,17 @@ public class ToneGenerator
             DUAL_TONES.put((int)t[0], new double[]{t[1], t[2]});
         }
     }
+    private boolean mLegacyToneLevels;
+
+    /**
+     * Selects legacy amplitude levels without changing tone frequencies.
+     * Defaults to false, retaining hardware-calibrated levels.
+     */
+    public void setLegacyToneLevels(boolean enabled)
+    {
+        mLegacyToneLevels = enabled;
+    }
+
     private final Oscillator mOscillator1 = new Oscillator(0.0, SAMPLE_RATE);
     private final Oscillator mOscillator2 = new Oscillator(0.0, SAMPLE_RATE);
 
@@ -124,13 +135,17 @@ public class ToneGenerator
         Tone tone = toneParameters.getTone();
 
         //Apply the gain specified in the tone parameters to the requested/argument overall gain
-        float gain = (toneParameters.getAmplitude() / 127.0f) * overallGain;
+        float gain = (mLegacyToneLevels ? toneParameters.getAmplitude() / 127.0f :
+            amplitude(toneParameters.getAmplitude())) * overallGain;
         double[] frequencies = synthesisFrequencies(tone);
 
         if(frequencies.length == 2)
         {
-            //Legacy level: divide amplitude equally between simultaneous tone components.
-            gain *= 0.5f;
+            //Legacy mode divides amplitude equally between simultaneous components.
+            if(mLegacyToneLevels)
+            {
+                gain *= 0.5f;
+            }
             mOscillator1.setFrequency(frequencies[0]);
             mOscillator2.setFrequency(frequencies[1]);
             float[] samples = mOscillator1.generate(SAMPLE_COUNT, gain);
