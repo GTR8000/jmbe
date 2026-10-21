@@ -124,12 +124,13 @@ public class ToneGenerator
         Tone tone = toneParameters.getTone();
 
         //Apply the gain specified in the tone parameters to the requested/argument overall gain
-        float gain = amplitude(toneParameters.getAmplitude()) * overallGain;
+        float gain = (toneParameters.getAmplitude() / 127.0f) * overallGain;
         double[] frequencies = synthesisFrequencies(tone);
 
         if(frequencies.length == 2)
         {
-            //Each component at the full tone level, as the chip does
+            //Legacy level: divide amplitude equally between simultaneous tone components.
+            gain *= 0.5f;
             mOscillator1.setFrequency(frequencies[0]);
             mOscillator2.setFrequency(frequencies[1]);
             float[] samples = mOscillator1.generate(SAMPLE_COUNT, gain);
