@@ -21,6 +21,7 @@ public class JMBEAudioLibrary implements IAudioCodecLibrary
         sb.append(getMinorVersion());
         sb.append(".");
         sb.append(getBuildVersion());
+        sb.append("-GTR8000-1 (optional legacy tone levels)");
 
         return sb.toString();
     }
